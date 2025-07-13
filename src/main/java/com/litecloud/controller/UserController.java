@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.litecloud.entity.Users;
@@ -34,5 +35,21 @@ public class UserController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         return res;
+    }
+
+    @PostMapping("/admin/update")
+    public Map<String, Object> admin(@RequestBody Users user) {
+        return userService.adminUpdate(user);
+    }
+
+    @PostMapping("/admin/add")
+    public Map<String, Object> addUser(@RequestBody Users user) {
+        return userService.addUser(user);
+    }
+
+    @GetMapping("/admin/list")
+    public Map<String, Object> listUsers(@RequestParam int page,
+            @RequestParam int size) {
+        return userService.listUsers(page, size);
     }
 }

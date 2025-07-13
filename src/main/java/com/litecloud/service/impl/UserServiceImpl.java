@@ -3,6 +3,7 @@ package com.litecloud.service.impl;
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +68,48 @@ public class UserServiceImpl implements UserService {
             result.put("message", "Invalid username or password");
         }
         return result;
+    }
+
+    @Override
+    public Map<String, Object> adminUpdate(Users user) {
+        Map<String, Object> res = new HashMap<>();
+        int result = userMapper.updateByPrimaryKey(user);
+        if (result > 0) {
+            res.put("status", "success");
+            res.put("message", "User updated successfully");
+        } else {
+            res.put("status", "fail");
+            res.put("message", "Failed to update user");
+        }
+        return res;
+    }
+
+    @Override
+    public Map<String, Object> addUser(Users user) {
+        Map<String, Object> res = new HashMap<>();
+        int result = userMapper.insert(user);
+        if (result > 0) {
+            res.put("status", "success");
+            res.put("message", "User added successfully");
+        } else {
+            res.put("status", "fail");
+            res.put("message", "Failed to add user");
+        }
+        return res;
+    }
+
+    @Override
+    public Map<String, Object> listUsers(int page, int size) {
+        Map<String, Object> res = new HashMap<>();
+        int offset = (page - 1) * size;
+        List<Users> users = userMapper.listUsers(offset, size);
+        if (users != null && !users.isEmpty()) {
+            res.put("status", "success");
+            res.put("data", users);
+        } else {
+            res.put("status", "fail");
+            res.put("message", "No users found");
+        }
+        return res;
     }
 }

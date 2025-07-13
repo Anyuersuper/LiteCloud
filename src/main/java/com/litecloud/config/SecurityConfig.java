@@ -10,11 +10,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() // 禁用CSRF保护
+                .csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers(
-                        "/", "/logout", "/login", "/login.html")
-                .permitAll()
+                .antMatchers("/", "/logout", "/login", "/login.html").permitAll()
+                .antMatchers("/admin.html", "/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().maximumSessions(5);

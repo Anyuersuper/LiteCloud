@@ -13,7 +13,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers("/logout", "/", "/login.html", "/login").permitAll()
-                .antMatchers("/admin", "admin.html").hasRole("ADMIN")
+                .antMatchers("/admin", "/admin.html").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().maximumSessions(5);

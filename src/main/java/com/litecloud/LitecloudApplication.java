@@ -10,5 +10,4 @@ public class LitecloudApplication {
 		SpringApplication.run(LitecloudApplication.class, args);
 		System.out.print("LiteCloud start over!");
 	}
-
 }

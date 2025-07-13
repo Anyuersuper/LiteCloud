@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.litecloud.mapper.FilesMapper">
+    <resultMap id="BaseResultMap" type="com.litecloud.entity.Files">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+        <result column="file_type" property="fileType" jdbcType="VARCHAR" />
+        <result column="size" property="size" jdbcType="BIGINT" />
+        <result column="path" property="path" jdbcType="VARCHAR" />
+        <result column="is_dir" property="isDir" jdbcType="TINYINT" />
+        <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+        <result column="owner_id" property="ownerId" jdbcType="BIGINT" />
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, file_name, file_type, size, path, is_dir, parent_id, owner_id, created_at
+    </sql>
+
+    <!-- 新增 -->
+    <insert id="insert" parameterType="com.litecloud.entity.Files">
+        INSERT INTO files (
+            id, file_name, file_type, size, path, is_dir, parent_id, owner_id, created_at
+        )
+        VALUES (
+            #{ id,jdbcType=BIGINT },
+            #{ fileName,jdbcType=VARCHAR },
+            #{ fileType,jdbcType=VARCHAR },
+            #{ size,jdbcType=BIGINT },
+            #{ path,jdbcType=VARCHAR },
+            #{ isDir,jdbcType=TINYINT },
+            #{ parentId,jdbcType=BIGINT },
+            #{ ownerId,jdbcType=BIGINT },
+            #{ createdAt,jdbcType=TIMESTAMP }
+        )
+    </insert>
+
+
+
+    <!-- 查询文件根据ownerId和parentId -->
+    <select id="selectByParentIdAndOwnerId" resultType="com.litecloud.entity.Files">
+        SELECT *
+        FROM files
+        WHERE parent_id = #{parentId} AND owner_id = #{ownerId}
+    </select>
+
+
+    <!-- 查询用户根目录 -->
+    <select id="selectRootByUserId"
+        parameterType="long"
+        resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM files
+        WHERE owner_id = #{userId}
+        AND parent_id IS NULL
+        AND is_dir = 1
+        LIMIT 1
+    </select>
+
+
+    <!-- 查询通过ParentId -->
+    <select id="selectByParentId"
+        parameterType="Long"
+        resultMap="BaseResultMap">
+    SELECT
+        <include refid="Base_Column_List" />
+    FROM files
+    WHERE parent_id = #{parentId}
+    </select>
+
+
+    <!-- 查询通过文件名 -->
+    <select id="selectByFileName" resultType="com.litecloud.entity.Files">
+        SELECT * FROM files WHERE file_name = #{fileName}
+    </select>
+
+    <!-- 删除通过主键 -->
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM files
+        WHERE id = #{ id,jdbcType=BIGINT }
+    </delete>
+
+    <!-- 更新通过主键 -->
+    <update id="updateByPrimaryKey" parameterType="com.litecloud.entity.Files">
+        UPDATE files
+        SET
+            file_name = #{ fileName,jdbcType=VARCHAR },
+            file_type = #{ fileType,jdbcType=VARCHAR },
+            size = #{ size,jdbcType=BIGINT },
+            path = #{ path,jdbcType=VARCHAR },
+            is_dir = #{ isDir,jdbcType=TINYINT },
+            parent_id = #{ parentId,jdbcType=BIGINT },
+            owner_id = #{ ownerId,jdbcType=BIGINT },
+            created_at = #{ createdAt,jdbcType=TIMESTAMP }
+        WHERE id = #{ id,jdbcType=BIGINT }
+    </update>
+
+    <!-- 查询通过主键 -->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM files
+        WHERE id = #{ id,jdbcType=BIGINT }
+    </select>
+
+    <!-- 全选 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM files
+    </select>
+</mapper>

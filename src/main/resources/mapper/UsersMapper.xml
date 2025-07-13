@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.litecloud.mapper.UsersMapper">
+    <resultMap id="BaseResultMap" type="com.litecloud.entity.Users">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="role" property="role" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, username, password, role
+    </sql>
+
+    <insert id="insert" parameterType="com.litecloud.entity.Users">
+        INSERT INTO users (
+            id, username, password, role
+        )
+        VALUES (
+            #{ id,jdbcType=BIGINT },
+            #{ username,jdbcType=VARCHAR },
+            #{ password,jdbcType=VARCHAR },
+            #{ role,jdbcType=VARCHAR }
+        )
+    </insert>
+
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM users
+        WHERE id = #{ id,jdbcType=BIGINT }
+    </delete>
+
+    <update id="updateByPrimaryKey" parameterType="com.litecloud.entity.Users">
+        UPDATE users
+        SET
+            username = #{ username,jdbcType=VARCHAR },
+            password = #{ password,jdbcType=VARCHAR },
+            role = #{ role,jdbcType=VARCHAR }
+        WHERE id = #{ id,jdbcType=BIGINT }
+    </update>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM users
+        WHERE id = #{ id,jdbcType=BIGINT }
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM users
+    </select>
+
+    <select id="login" parameterType="map" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM users
+        WHERE username = #{username} AND password = #{password}
+    </select>
+</mapper>

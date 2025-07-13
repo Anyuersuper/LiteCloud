@@ -1,156 +1,226 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
+
 <head>
     <meta charset="UTF-8">
     <title>LiteCloud 用户网盘</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body {background: #f5f6fa; font-family: 'Segoe UI', Arial, sans-serif;}
-        .container {width: 900px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 32px 28px;}
-        h2 {text-align: center; color: #2d8cf0; margin-bottom: 24px;}
-        .toolbar {margin-bottom: 18px; display: flex; gap: 10px;}
-        .file-list {width: 100%; border-collapse: collapse; margin-top: 10px;}
-        .file-list th, .file-list td {padding: 8px 10px; border-bottom: 1px solid #eee; text-align: left;}
-        .file-list th {background: #f0f4fa; color: #333;}
-        .file-list tr:hover {background: #f6faff;}
-        .breadcrumb {margin-bottom: 12px; color: #888;}
-        .folder {color: #2d8cf0; cursor: pointer;}
-        .actions button {margin-right: 6px;}
-        .msg {color: #27ae60; margin-left: 10px;}
-        .err {color: #e74c3c; margin-left: 10px;}
+        body {
+            background: #f5f6fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .container {
+            width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            padding: 32px 28px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2d8cf0;
+            margin-bottom: 24px;
+        }
+
+        .toolbar {
+            margin-bottom: 18px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .file-list {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .file-list th,
+        .file-list td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        .file-list th {
+            background: #f0f4fa;
+            color: #333;
+        }
+
+        .file-list tr:hover {
+            background: #f6faff;
+        }
+
+        .breadcrumb {
+            margin-bottom: 12px;
+            color: #888;
+        }
+
+        .folder {
+            color: #2d8cf0;
+            cursor: pointer;
+        }
+
+        .actions button {
+            margin-right: 6px;
+        }
+
+        .msg {
+            color: #27ae60;
+            margin-left: 10px;
+        }
+
+        .err {
+            color: #e74c3c;
+            margin-left: 10px;
+        }
     </style>
 </head>
-<body>
-<div class="container">
-    <h2>LiteCloud 网盘</h2>
-    <div class="breadcrumb" id="breadcrumb"></div>
-    <div class="toolbar">
-        <input type="file" id="uploadFile" style="display:none">
-        <button onclick="document.getElementById('uploadFile').click()">上传文件</button>
-        <input type="text" id="newDirName" placeholder="新建文件夹名称" style="width:140px">
-        <button onclick="createDir()">新建文件夹</button>
-        <span id="opMsg"></span>
-    </div>
-    <table class="file-list">
-        <thead>
-        <tr><th>名称</th><th>类型</th><th>大小</th><th>创建时间</th><th>操作</th></tr>
-        </thead>
-        <tbody id="fileTable"></tbody>
-    </table>
-</div>
-<script>
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-    return null;
-}
-let userId = getCookie('userId') || 1;
-let rootFileId = getCookie('rootFileId');
-let currentParentId = rootFileId ? parseInt(rootFileId) : 0;
-let pathStack = [{id: currentParentId, name: '根目录'}];
 
-function renderBreadcrumb() {
-    const bc = document.getElementById('breadcrumb');
-    bc.innerHTML = pathStack.map((p,i) => `<span class="folder" onclick="gotoLevel(${i})">${p.name}</span>`).join(' / ');
-}
-function gotoLevel(idx) {
-    pathStack = pathStack.slice(0, idx+1);
-    currentParentId = pathStack[idx].id;
-    loadFiles();
-}
-function loadFiles() {
-    renderBreadcrumb();
-    fetch(`/files/list?parentId=${currentParentId}&ownerId=${userId}`)
-        .then(r=>r.json()).then(data=>{
-            const tb = document.getElementById('fileTable');
-            tb.innerHTML = '';
-            if(data.files && data.files.length) {
-                data.files.forEach(f=>{
-                    // 格式化createdAt
-                    let createdAt = '';
-                    if (f.createdAt) {
-                        if (typeof f.createdAt === 'string') {
-                            createdAt = f.createdAt.replace('T', ' ').replace(/\.\d+Z?$/, '');
-                        } else if (typeof f.createdAt === 'object' && f.createdAt.year) {
-                            // 兼容MyBatis返回的LocalDateTime对象
-                            createdAt = `${f.createdAt.year}-${String(f.createdAt.monthValue).padStart(2,'0')}-${String(f.createdAt.dayOfMonth).padStart(2,'0')} ${String(f.createdAt.hour).padStart(2,'0')}:${String(f.createdAt.minute).padStart(2,'0')}`;
-                        }
+<body>
+    <div class="container">
+        <h2>LiteCloud 网盘</h2>
+        <div class="breadcrumb" id="breadcrumb"></div>
+        <div class="toolbar">
+            <input type="file" id="uploadFile" style="display:none">
+            <button onclick="document.getElementById('uploadFile').click()">上传文件</button>
+            <input type="text" id="newDirName" placeholder="新建文件夹名称" style="width:140px">
+            <button onclick="createDir()">新建文件夹</button>
+            <span id="opMsg"></span>
+        </div>
+        <table class="file-list">
+            <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>类型</th>
+                    <th>大小</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="fileTable"></tbody>
+        </table>
+    </div>
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+        let userId = getCookie('userId') || 1;
+        let rootFileId = getCookie('rootFileId');
+        let currentParentId = rootFileId ? parseInt(rootFileId) : 0;
+        let pathStack = [{ id: currentParentId, name: '根目录' }];
+
+        function renderBreadcrumb() {
+            const bc = document.getElementById('breadcrumb');
+            bc.innerHTML = pathStack.map((p, i) => `<span class="folder" onclick="gotoLevel(${i})">${p.name}</span>`).join(' / ');
+        }
+        function gotoLevel(idx) {
+            pathStack = pathStack.slice(0, idx + 1);
+            currentParentId = pathStack[idx].id;
+            loadFiles();
+        }
+        function loadFiles() {
+            renderBreadcrumb();
+            fetch(`/files/list?parentId=${currentParentId}&ownerId=${userId}`, {
+                credentials: 'include'
+            })
+                .then(r => r.json()).then(data => {
+                    const tb = document.getElementById('fileTable');
+                    tb.innerHTML = '';
+                    if (data.files && data.files.length) {
+                        data.files.forEach(f => {
+                            let createdAt = '';
+                            if (f.createdAt) {
+                                if (typeof f.createdAt === 'string') {
+                                    createdAt = f.createdAt.replace('T', ' ').replace(/\.\d+Z?$/, '');
+                                } else if (typeof f.createdAt === 'object' && f.createdAt.year) {
+                                    createdAt = `${f.createdAt.year}-${String(f.createdAt.monthValue).padStart(2, '0')}-${String(f.createdAt.dayOfMonth).padStart(2, '0')} ${String(f.createdAt.hour).padStart(2, '0')}:${String(f.createdAt.minute).padStart(2, '0')}`;
+                                }
+                            }
+                            tb.innerHTML += `<tr>
+                    <td>${f.isDir ? `<span class='folder' onclick='enterDir(${f.id},\"${f.fileName}\")'>📁 ${f.fileName}</span>` : `📄 ${f.fileName}`}</td>
+                    <td>${f.isDir ? '文件夹' : (f.fileType || '文件')}</td>
+                    <td>${f.isDir ? '--' : formatSize(f.size)}</td>
+                    <td>${createdAt}</td>
+                    <td class='actions'>
+                        ${f.isDir ? `<button onclick='enterDir(${f.id},\"${f.fileName}\")'>进入</button>` : ''}
+                        <button onclick='deleteFile(${f.id})'>删除</button>
+                    </td>
+                </tr>`;
+                        });
+                    } else {
+                        tb.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#aaa;">暂无文件</td></tr>';
                     }
-                    tb.innerHTML += `<tr>
-                        <td>${f.isDir?`<span class='folder' onclick='enterDir(${f.id},\"${f.fileName}\")'>📁 ${f.fileName}</span>`:`📄 ${f.fileName}`}</td>
-                        <td>${f.isDir?'文件夹':(f.fileType||'文件')}</td>
-                        <td>${f.isDir?'--':formatSize(f.size)}</td>
-                        <td>${createdAt}</td>
-                        <td class='actions'>
-                            ${f.isDir?`<button onclick='enterDir(${f.id},\"${f.fileName}\")'>进入</button>`:''}
-                            <button onclick='deleteFile(${f.id})'>删除</button>
-                        </td>
-                    </tr>`;
                 });
-            } else {
-                tb.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#aaa;">暂无文件</td></tr>';
-            }
-        });
-}
-function enterDir(id, name) {
-    pathStack.push({id, name});
-    currentParentId = id;
-    loadFiles();
-}
-function formatSize(size) {
-    if(size<1024) return size+'B';
-    if(size<1024*1024) return (size/1024).toFixed(1)+'KB';
-    if(size<1024*1024*1024) return (size/1024/1024).toFixed(1)+'MB';
-    return (size/1024/1024/1024).toFixed(1)+'GB';
-}
-document.getElementById('uploadFile').onchange = function() {
-    const file = this.files[0];
-    if(!file) return;
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('parentId', currentParentId);
-    formData.append('ownerId', userId);
-    const msg = document.getElementById('opMsg');
-    msg.textContent = '';
-    fetch('/files/upload', {method:'POST', body:formData})
-        .then(r=>r.json()).then(data=>{
-            if(data.success) {msg.textContent='上传成功'; msg.className='msg'; loadFiles();}
-            else {msg.textContent=data.message||'上传失败'; msg.className='err';}
-        }).catch(()=>{msg.textContent='网络错误'; msg.className='err';});
-    this.value = '';
-};
-function createDir() {
-    const dirName = document.getElementById('newDirName').value.trim();
-    if(!dirName) return;
-    const msg = document.getElementById('opMsg');
-    msg.textContent = '';
-    // 确保每次都带上最新的userId和parentId
-    const uid = getCookie('userId') || userId;
-    const pid = currentParentId;
-    fetch('/files/mkdir', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({fileName:dirName, isDir:1, parentId:pid, ownerId:uid})
-    }).then(r=>r.json()).then(data=>{
-        if(data.success) {msg.textContent='创建成功'; msg.className='msg'; document.getElementById('newDirName').value=''; loadFiles();}
-        else {msg.textContent=data.message||'创建失败'; msg.className='err';}
-    }).catch(()=>{msg.textContent='网络错误'; msg.className='err';});
-}
-function deleteFile(id) {
-    const msg = document.getElementById('opMsg');
-    msg.textContent = '';
-    fetch('/files/deldir', {
-        method:'DELETE',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({id:id})
-    }).then(r=>r.json()).then(data=>{
-        if(data.success) {msg.textContent='删除成功'; msg.className='msg'; loadFiles();}
-        else {msg.textContent=data.message||'删除失败'; msg.className='err';}
-    }).catch(()=>{msg.textContent='网络错误'; msg.className='err';});
-}
-// 初始化
-loadFiles();
-</script>
+        }
+        function enterDir(id, name) {
+            pathStack.push({ id, name });
+            currentParentId = id;
+            loadFiles();
+        }
+        function formatSize(size) {
+            if (size < 1024) return size + 'B';
+            if (size < 1024 * 1024) return (size / 1024).toFixed(1) + 'KB';
+            if (size < 1024 * 1024 * 1024) return (size / 1024 / 1024).toFixed(1) + 'MB';
+            return (size / 1024 / 1024 / 1024).toFixed(1) + 'GB';
+        }
+        document.getElementById('uploadFile').onchange = function () {
+            const file = this.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('parentId', currentParentId);
+            formData.append('ownerId', userId);
+            const msg = document.getElementById('opMsg');
+            msg.textContent = '';
+            fetch('/files/upload', {
+                method: 'POST',
+                body: formData
+            }).then(r => r.json()).then(data => {
+                if (data.success) { msg.textContent = '上传成功'; msg.className = 'msg'; loadFiles(); }
+                else { msg.textContent = data.message || '上传失败'; msg.className = 'err'; }
+            }).catch(() => { msg.textContent = '网络错误'; msg.className = 'err'; });
+            this.value = '';
+        };
+        function createDir() {
+            const dirName = document.getElementById('newDirName').value.trim();
+            if (!dirName) return;
+            const msg = document.getElementById('opMsg');
+            msg.textContent = '';
+            const uid = getCookie('userId') || userId;
+            const pid = currentParentId;
+            fetch('/files/mkdir', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fileName: dirName, isDir: 1, parentId: pid, ownerId: uid }),
+                credentials: 'include'
+            }).then(r => r.json()).then(data => {
+                if (data.success) { msg.textContent = '创建成功'; msg.className = 'msg'; document.getElementById('newDirName').value = ''; loadFiles(); }
+                else { msg.textContent = data.message || '创建失败'; msg.className = 'err'; }
+            }).catch(() => { msg.textContent = '网络错误'; msg.className = 'err'; });
+        }
+        function deleteFile(id) {
+            const msg = document.getElementById('opMsg');
+            msg.textContent = '';
+            fetch('/files/deldir', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id }),
+                credentials: 'include'
+            }).then(r => r.json()).then(data => {
+                if (data.success) { msg.textContent = '删除成功'; msg.className = 'msg'; loadFiles(); }
+                else { msg.textContent = data.message || '删除失败'; msg.className = 'err'; }
+            }).catch(() => { msg.textContent = '网络错误'; msg.className = 'err'; });
+        }
+        // 初始化
+        loadFiles();
+    </script>
 </body>
+
 </html>

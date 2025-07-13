@@ -1,78 +1,124 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
+
 <head>
     <meta charset="UTF-8">
     <title>LiteCloud 登录</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body {background: #f5f6fa; font-family: 'Segoe UI', Arial, sans-serif;}
+        body {
+            background: #f5f6fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
         .login-container {
-            width: 350px; margin: 100px auto; background: #fff; border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 32px 28px;
+            width: 350px;
+            margin: 100px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            padding: 32px 28px;
         }
-        .login-title {text-align: center; font-size: 2em; margin-bottom: 24px; color: #2d8cf0;}
-        .form-group {margin-bottom: 18px;}
-        label {display: block; margin-bottom: 6px; color: #555;}
-        input[type="text"], input[type="password"] {
-            width: 100%; padding: 10px; border: 1px solid #dcdfe6; border-radius: 4px;
-            font-size: 1em; box-sizing: border-box;
+
+        .login-title {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 24px;
+            color: #2d8cf0;
         }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
         .login-btn {
-            width: 100%; padding: 10px; background: #2d8cf0; color: #fff;
-            border: none; border-radius: 4px; font-size: 1.1em; cursor: pointer;
+            width: 100%;
+            padding: 10px;
+            background: #2d8cf0;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            cursor: pointer;
             transition: background 0.2s;
         }
-        .login-btn:hover {background: #1a73e8;}
-        .error-msg {color: #e74c3c; text-align: center; margin-bottom: 10px;}
+
+        .login-btn:hover {
+            background: #1a73e8;
+        }
+
+        .error-msg {
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
+
 <body>
-<div class="login-container">
-    <div class="login-title">LiteCloud 登录</div>
-    <div id="error" class="error-msg" style="display:none;"></div>
-    <form id="loginForm">
-        <div class="form-group">
-            <label for="username">用户名</label>
-            <input type="text" id="username" name="username" required autocomplete="username">
-        </div>
-        <div class="form-group">
-            <label for="password">密码</label>
-            <input type="password" id="password" name="password" required autocomplete="current-password">
-        </div>
-        <button type="submit" class="login-btn">登录</button>
-    </form>
-</div>
-<script>
-    document.getElementById('loginForm').onsubmit = async function(e) {
-        e.preventDefault();
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
-        const errorDiv = document.getElementById('error');
-        errorDiv.style.display = 'none';
-        try {
-            const resp = await fetch('/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username, password})
-            });
-            const data = await resp.json();
-            if (data.success || data.status === 'success') {
-                if (data.userId) {
-                    document.cookie = `userId=${data.userId}; path=/;`;
+    <div class="login-container">
+        <div class="login-title">LiteCloud 登录</div>
+        <div id="error" class="error-msg" style="display:none;"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="login-btn">登录</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('loginForm').onsubmit = async function (e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error');
+            errorDiv.style.display = 'none';
+            try {
+                const resp = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await resp.json();
+                if (data.success || data.status === 'success') {
+                    if (data.userId) {
+                        document.cookie = `userId=${data.userId}; path=/;`;
+                    }
+                    if (data.rootFileId) {
+                        document.cookie = `rootFileId=${data.rootFileId}; path=/;`;
+                    }
+                    window.location.href = '/dashboard';
+                } else {
+                    errorDiv.textContent = data.message || '用户名或密码错误';
+                    errorDiv.style.display = 'block';
                 }
-                if (data.rootFileId) {
-                    document.cookie = `rootFileId=${data.rootFileId}; path=/;`;
-                }
-                window.location.href = '/dashboard.html';
-            } else {
-                errorDiv.textContent = data.message || '用户名或密码错误';
+            } catch (err) {
+                errorDiv.textContent = '网络错误，请重试';
                 errorDiv.style.display = 'block';
             }
-        } catch (err) {
-            errorDiv.textContent = '网络错误，请重试';
-            errorDiv.style.display = 'block';
-        }
-    };
-</script>
+        };
+    </script>
 </body>
+
 </html>

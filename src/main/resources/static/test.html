@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <title>LiteCloud 文件管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: #f5f6fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .container {
+            width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            padding: 32px 28px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2d8cf0;
+            margin-bottom: 24px;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        button {
+            background: #2d8cf0;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+
+        button:hover {
+            background: #1a73e8;
+        }
+
+        .msg {
+            color: #27ae60;
+            margin-top: 8px;
+        }
+
+        .err {
+            color: #e74c3c;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>LiteCloud 文件管理</h2>
+        <!-- 上传文件 -->
+        <div class="section">
+            <h3>上传文件</h3>
+            <form id="uploadForm">
+                <label>选择文件</label>
+                <input type="file" id="file" name="file" required>
+                <label>父目录ID</label>
+                <input type="text" id="parentId" name="parentId" placeholder="如：0 或 目录ID" required>
+                <label>用户ID</label>
+                <input type="text" id="ownerId" name="ownerId" placeholder="请输入用户ID" required>
+                <button type="submit">上传</button>
+                <span id="uploadMsg"></span>
+            </form>
+        </div>
+        <!-- 创建文件夹 -->
+        <div class="section">
+            <h3>创建文件夹</h3>
+            <form id="mkdirForm">
+                <label>文件夹名称</label>
+                <input type="text" id="dirName" name="dirName" required>
+                <label>父目录ID</label>
+                <input type="text" id="mkdirParentId" name="mkdirParentId" required>
+                <label>用户ID</label>
+                <input type="text" id="mkdirOwnerId" name="mkdirOwnerId" required>
+                <button type="submit">创建</button>
+                <span id="mkdirMsg"></span>
+            </form>
+        </div>
+        <!-- 删除文件/文件夹 -->
+        <div class="section">
+            <h3>删除文件/文件夹</h3>
+            <form id="deleteForm">
+                <label>文件/文件夹ID</label>
+                <input type="text" id="deleteId" name="deleteId" required>
+                <button type="submit">删除</button>
+                <span id="deleteMsg"></span>
+            </form>
+        </div>
+    </div>
+    <script>
+        // 上传文件
+        const uploadForm = document.getElementById('uploadForm');
+        uploadForm.onsubmit = async function (e) {
+            e.preventDefault();
+            const file = document.getElementById('file').files[0];
+            const parentId = document.getElementById('parentId').value;
+            const ownerId = document.getElementById('ownerId').value;
+            const msg = document.getElementById('uploadMsg');
+            msg.textContent = '';
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('parentId', parentId);
+            formData.append('ownerId', ownerId);
+            try {
+                const resp = await fetch('/files/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await resp.json();
+                if (data.success) {
+                    msg.textContent = '上传成功！'; msg.className = 'msg';
+                } else {
+                    msg.textContent = data.message || '上传失败'; msg.className = 'err';
+                }
+            } catch (err) {
+                msg.textContent = '网络错误'; msg.className = 'err';
+            }
+        };
+        // 创建文件夹
+        const mkdirForm = document.getElementById('mkdirForm');
+        mkdirForm.onsubmit = async function (e) {
+            e.preventDefault();
+            const dirName = document.getElementById('dirName').value;
+            const parentId = document.getElementById('mkdirParentId').value;
+            const ownerId = document.getElementById('mkdirOwnerId').value;
+            const msg = document.getElementById('mkdirMsg');
+            msg.textContent = '';
+            try {
+                const resp = await fetch('/files/mkdir', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fileName: dirName, isDir: 1, parentId: parentId, ownerId: ownerId })
+                });
+                const data = await resp.json();
+                if (data.success) {
+                    msg.textContent = '创建成功！'; msg.className = 'msg';
+                } else {
+                    msg.textContent = data.message || '创建失败'; msg.className = 'err';
+                }
+            } catch (err) {
+                msg.textContent = '网络错误'; msg.className = 'err';
+            }
+        };
+        // 删除文件/文件夹
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.onsubmit = async function (e) {
+            e.preventDefault();
+            const id = document.getElementById('deleteId').value;
+            const msg = document.getElementById('deleteMsg');
+            msg.textContent = '';
+            try {
+                const resp = await fetch('/files/deldir', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                });
+                const data = await resp.json();
+                if (data.success) {
+                    msg.textContent = '删除成功！'; msg.className = 'msg';
+                } else {
+                    msg.textContent = data.message || '删除失败'; msg.className = 'err';
+                }
+            } catch (err) {
+                msg.textContent = '网络错误'; msg.className = 'err';
+            }
+        };
+    </script>
+</body>
+
+</html>

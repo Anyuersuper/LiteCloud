@@ -143,16 +143,17 @@
                                     createdAt = `${f.createdAt.year}-${String(f.createdAt.monthValue).padStart(2, '0')}-${String(f.createdAt.dayOfMonth).padStart(2, '0')} ${String(f.createdAt.hour).padStart(2, '0')}:${String(f.createdAt.minute).padStart(2, '0')}`;
                                 }
                             }
-                            tb.innerHTML += `<tr>
+                    tb.innerHTML += `<tr>
                     <td>${f.isDir ? `<span class='folder' onclick='enterDir(${f.id},\"${f.fileName}\")'>📁 ${f.fileName}</span>` : `📄 ${f.fileName}`}</td>
                     <td>${f.isDir ? '文件夹' : (f.fileType || '文件')}</td>
                     <td>${f.isDir ? '--' : formatSize(f.size)}</td>
                     <td>${createdAt}</td>
                     <td class='actions'>
-                        ${f.isDir ? `<button onclick='enterDir(${f.id},\"${f.fileName}\")'>进入</button>` : ''}
+                        ${f.isDir ? `<button onclick='enterDir(${f.id},\"${f.fileName}\")'>进入</button>` : `<a href="/files/downloadFile?id=${f.id}" style="text-decoration:none;"><button>下载</button></a>`}
                         <button onclick='deleteFile(${f.id})'>删除</button>
                     </td>
                 </tr>`;
+
                         });
                     } else {
                         tb.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#aaa;">暂无文件</td></tr>';

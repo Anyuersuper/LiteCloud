@@ -2,13 +2,16 @@ package com.litecloud.controller;
 
 import com.litecloud.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.litecloud.entity.Files;
-
 import java.io.File;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/files")
@@ -16,6 +19,26 @@ public class FileController {
 
     @Autowired
     private FileService fileService;
+
+    /**
+     * 文件流下载接口
+     * 访问示例: /files/downloadFile?id=3
+     */
+    @GetMapping("/downloadFile")
+    public ResponseEntity<byte[]> downloadFile(@RequestParam("id") Long id, HttpServletRequest request)
+            throws Exception {
+        String userAgent = request.getHeader("User-Agent");
+        Map<String, Object> result = fileService.downloadFile(id, userAgent);
+        if (!"success".equals(result.get("status"))) {
+            return ResponseEntity.status(404).body(null);
+        }
+        String encodedFileName = (String) result.get("fileName");
+        byte[] fileBytes = (byte[]) result.get("fileBytes");
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(fileBytes);
+    }
 
     /**
      * 文件上传只能用form-data

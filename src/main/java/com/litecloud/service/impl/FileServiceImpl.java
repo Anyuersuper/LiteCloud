@@ -1,4 +1,7 @@
+
 package com.litecloud.service.impl;
+
+import java.io.FileInputStream;
 
 import com.litecloud.entity.Files;
 import com.litecloud.mapper.FilesMapper;
@@ -97,6 +100,23 @@ public class FileServiceImpl implements FileService {
         return res;
     }
 
+    
+
+    @Override
+    public Map<String, Object> list(Long parentId, Long ownerId) {
+        Map<String, Object> res = new HashMap<>();
+        List<Files> filesList = filesMapper.selectByParentIdAndOwnerId(parentId, ownerId);
+        if (filesList == null || filesList.isEmpty()) {
+            res.put("status", "fail");
+            res.put("message", "没有找到相关文件或目录");
+            return res;
+
+        }
+        res.put("status", "success");
+        res.put("files", filesList);
+        return res;
+    }
+
     @Override
     public Map<String, Object> deldir(Files file) {
         file = filesMapper.selectByPrimaryKey(file.getId());
@@ -165,17 +185,34 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Map<String, Object> list(Long parentId, Long ownerId) {
+    public Map<String, Object> downloadFile(Long id, String userAgent) throws Exception {
         Map<String, Object> res = new HashMap<>();
-        List<Files> filesList = filesMapper.selectByParentIdAndOwnerId(parentId, ownerId);
-        if (filesList == null || filesList.isEmpty()) {
+        Files file = filesMapper.selectByPrimaryKey(id);
+        if (file == null || file.getIsDir() == 1) {
             res.put("status", "fail");
-            res.put("message", "没有找到相关文件或目录");
+            res.put("message", "文件不存在或不能下载目录");
             return res;
-            
+        }
+        java.io.File realFile = new java.io.File(file.getPath());
+        if (!realFile.exists()) {
+            res.put("status", "fail");
+            res.put("message", "文件不存在");
+            return res;
+        }
+        byte[] fileBytes;
+        try (FileInputStream in = new FileInputStream(realFile)) {
+            fileBytes = in.readAllBytes();
+        }
+        String fileName = file.getFileName();
+        String encodedFileName;
+        if (userAgent != null && userAgent.contains("MSIE")) {
+            encodedFileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+        } else {
+            encodedFileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
         }
         res.put("status", "success");
-        res.put("files", filesList);
+        res.put("fileName", encodedFileName);
+        res.put("fileBytes", fileBytes);
         return res;
     }
 }

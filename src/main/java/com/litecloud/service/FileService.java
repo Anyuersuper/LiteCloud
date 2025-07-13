@@ -13,4 +13,9 @@ public interface FileService {
     Map<String, Object> deldir(Files file);
 
     Map<String, Object> list(Long parentId, Long ownerId);
+
+    /**
+     * 文件流下载，返回字节数组和文件名
+     */
+    Map<String, Object> downloadFile(Long id, String userAgent) throws Exception;
 }

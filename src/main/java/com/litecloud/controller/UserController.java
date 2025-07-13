@@ -28,15 +28,19 @@ public class UserController {
     public Map<String, Object> login(@RequestBody Users user, HttpServletRequest request) {
         Map<String, Object> res = userService.login(user.getUsername(), user.getPassword());
         if ("success".equals(res.get("status"))) {
+            // 登录成功后强制创建Session
+            request.getSession();
             request.getSession().setAttribute("userId", res.get("userId"));
+            // 设置Spring Security认证
             String role = (String) res.get("role");
             String springRole = "ROLE_USER";
             if ("admin".equals(role)) {
                 springRole = "ROLE_ADMIN";
             }
+            org.springframework.security.core.GrantedAuthority authority = new org.springframework.security.core.authority.SimpleGrantedAuthority(
+                    springRole);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    user.getUsername(), null,
-                    java.util.Collections.singletonList(new SimpleGrantedAuthority(springRole)));
+                    user.getUsername(), null, Collections.singletonList(authority));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         return res;

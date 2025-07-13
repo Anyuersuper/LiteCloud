@@ -63,6 +63,7 @@ public class UserServiceImpl implements UserService {
             result.put("message", "Login successful");
             result.put("userId", userId);
             result.put("rootFileId", rootDir.getId());
+            result.put("role", user.getRole());
         } else {
             result.put("status", "error");
             result.put("message", "Invalid username or password");

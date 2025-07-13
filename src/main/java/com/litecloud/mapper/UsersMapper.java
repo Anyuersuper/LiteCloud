@@ -3,6 +3,8 @@ package com.litecloud.mapper;
 
 import com.litecloud.entity.Users;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.tomcat.jni.User;
+
 import java.util.List;
 
 @Mapper

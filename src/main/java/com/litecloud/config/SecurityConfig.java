@@ -12,8 +12,8 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers("/", "/logout", "/login", "/login.html").permitAll()
-                .antMatchers("/admin.html", "/admin/**").hasRole("ADMIN")
+                .antMatchers("/logout", "/", "/login.html", "/login").permitAll()
+                .antMatchers("/admin", "admin.html").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().maximumSessions(5);

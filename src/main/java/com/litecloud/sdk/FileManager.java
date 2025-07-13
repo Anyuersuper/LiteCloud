@@ -31,4 +31,15 @@ public class FileManager {
         }
         return success;
     }
+
+    /**
+     * 确保用户目录存在，不存在则创建
+     */
+    public static boolean mkdir(String userDirPath) {
+        File userDir = new File(userDirPath);
+        if (!userDir.exists()) {
+            return userDir.mkdirs();
+        }
+        return true;
+    }
 }

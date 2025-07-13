@@ -14,6 +14,7 @@ import com.litecloud.entity.Files;
 import com.litecloud.entity.Users;
 import com.litecloud.mapper.FilesMapper;
 import com.litecloud.mapper.UsersMapper;
+import com.litecloud.sdk.FileManager;
 import com.litecloud.service.UserService;
 
 @Service
@@ -36,14 +37,10 @@ public class UserServiceImpl implements UserService {
         if (user != null) {
             Long userId = user.getId();
             String userDirPath = basePath + "/u" + userId;
-            File userDir = new File(userDirPath);
-            if (!userDir.exists()) {
-                boolean created = userDir.mkdirs();
-                if (!created) {
-                    result.put("status", "error");
-                    result.put("message", "用户磁盘目录创建失败！");
-                    return result;
-                }
+            if (!FileManager.mkdir(userDirPath)) {
+                result.put("status", "error");
+                result.put("message", "用户磁盘目录创建失败！");
+                return result;
             }
             Files rootDir = filesMapper.selectRootByUserId(userId);
             if (rootDir == null) {

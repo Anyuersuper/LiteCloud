@@ -13,7 +13,7 @@ public class SecurityConfig {
                 .csrf().disable() // 禁用CSRF保护
                 .authorizeHttpRequests()
                 .antMatchers(
-                        "/index", "/logout", "/login", "/login.html")
+                        "/", "/logout", "/login", "/login.html")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()

@@ -89,6 +89,7 @@
             <button onclick="document.getElementById('uploadFile').click()">上传文件</button>
             <input type="text" id="newDirName" placeholder="新建文件夹名称" style="width:140px">
             <button onclick="createDir()">新建文件夹</button>
+            <button style="margin-left:auto;background:#e74c3c;color:#fff;" onclick="logout()">注销</button>
             <span id="opMsg"></span>
         </div>
         <table class="file-list">
@@ -105,6 +106,15 @@
         </table>
     </div>
     <script>
+        function logout() {
+            fetch('/logout', { method: 'POST' })
+                .then(() => {
+                    // 清除cookie/session等
+                    document.cookie = 'userId=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+                    document.cookie = 'rootFileId=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+                    window.location.href = '/login.html';
+                });
+        }
         function getCookie(name) {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);

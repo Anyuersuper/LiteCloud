@@ -24,6 +24,13 @@
         )
     </insert>
 
+    <!-- 分页查询用户 -->
+    <select id="listUsers" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM users
+        LIMIT #{offset}, #{size}
+    </select>
+
     <delete id="deleteByPrimaryKey">
         DELETE FROM users
         WHERE id = #{ id,jdbcType=BIGINT }

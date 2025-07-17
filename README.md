@@ -1,78 +1,143 @@
-# ☁️ LiteCloud
+# LiteCloud
 
-LiteCloud 是一个基于 Spring Boot 的简易网盘系统，支持多用户登录、文件上传下载、目录管理等基础云盘功能，适合个人或小型团队自建私有云盘。
+LiteCloud 是一个轻量级的云存储系统，基于 Spring Boot 开发，提供文件存储、用户管理等功能。
 
-## ✨ 功能特性
-- 用户注册与登录（Spring Security）
-- 文件上传、下载、删除
-- 目录（文件夹）创建与管理
-- 多用户隔离与权限控制
-- 文件元数据管理（文件名、类型、大小、路径等）
-- 简洁前端页面：登录页、管理页（dashboard）、后台管理
+## 功能特点
 
-## 🛠️ 技术栈
+- 🔐 用户认证与授权
+  - 基于 Spring Security 的安全认证
+  - 多角色支持（管理员/普通用户）
+  - 会话管理
+
+- 📂 文件管理
+  - 文件上传/下载
+  - 文件夹创建与管理
+  - 文件层级结构
+  - 每用户独立存储空间
+
+- 👥 用户管理
+  - 用户注册
+  - 账户管理
+  - 管理员控制面板
+
+- 💻 现代化界面
+  - 响应式设计
+  - 深色主题
+  - 移动端适配
+
+## 技术栈
+
+### 后端
 - Spring Boot 2.7.6
 - Spring Security
-- MyBatis-Plus 3.5.7
+- MyBatis-Plus
 - MySQL
-- Lombok
-- 原生 HTML/CSS 前端
 
-## 🚀 快速上手
+### 前端
+- 原生 JavaScript
+- 现代 CSS3
+- 响应式设计
 
-### 1. 环境准备
-- JDK 17 及以上
+## 系统要求
+
+- JDK 17+
+- MySQL 5.7+
 - Maven 3.6+
-- MySQL 5.7/8.0
 
-### 2. 数据库配置
-在 `src/main/resources/application.properties` 中配置数据库连接：
+## 快速开始
+
+1. 克隆仓库
+```bash
+git clone https://github.com/Anyuersuper/LiteCloud.git
+```
+
+2. 配置数据库
+- 创建数据库
+```sql
+CREATE DATABASE litecloud;
+```
+- 导入数据库文件
+```bash
+mysql -u root -p litecloud < mysql/litecloud.sql
+```
+- 默认管理员账号
+```
+用户名：admin
+密码：admin
+```
+> 请在首次登录后立即修改默认密码！
+
+3. 配置应用
+编辑 `src/main/resources/application.properties`:
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/litecloud
-spring.datasource.username=你的用户名
-spring.datasource.password=你的密码
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+litecloud.file.base-path=your_file_storage_path
 ```
-初始化数据库，可直接导入 `mysql/litecloud.sql`，其中已包含初始管理员账号。
 
-### 3. 启动项目
+4. 运行应用
 ```bash
-# Windows
-mvnw.cmd spring-boot:run
-# 或
 mvn spring-boot:run
 ```
-访问：http://localhost:8080/
 
-### 4. 初始管理员账号
-> **账号：admin**  
-> **密码：admin**
+访问 http://localhost:8080 即可使用系统。
 
-首次启动后请及时修改管理员密码！
+## 项目结构
 
-### 5. 主要接口说明
-- `/login` 用户登录（POST，JSON）
-- `/files/upload` 文件上传（POST，form-data）
-- `/files/downloadFile?id=xxx` 文件下载（GET）
-- `/files/createDir` 创建目录（POST，JSON）
+```
+LiteCloud
+├── src/main/java/com/litecloud
+│   ├── config/          # 配置类
+│   ├── controller/      # 控制器
+│   ├── entity/         # 实体类
+│   ├── mapper/         # MyBatis mapper
+│   ├── service/        # 业务逻辑
+│   └── sdk/           # 工具类
+├── src/main/resources
+│   ├── mapper/        # MyBatis XML
+│   ├── static/        # 前端资源
+│   └── application.properties
+└── mysql/             # 数据库脚本
+```
 
-## 📁 目录结构简述
-- `controller`：接口层，包含文件与用户相关接口
-- `service`：业务逻辑层
-- `entity`：实体类（如 Users、Files）
-- `mapper`：MyBatis-Plus 映射
-- `resources/static`：前端静态页面
-- `resources/mapper`：MyBatis XML 映射文件
+## 主要功能说明
 
-## 其他说明
-- 文件实际存储路径可在 `application.properties` 配置（`litecloud.file.base-path`）
-- 上传文件大小限制可配置
+### 文件管理
+- 支持文件上传、下载
+- 文件夹创建和管理
+- 文件预览（支持多种格式）
+- 文件权限控制
 
-## 📝 License
-MIT
+### 用户系统
+- 用户注册和登录
+- 角色基础的权限控制
+- 管理员控制面板
+- 用户空间管理
 
-演示截图
-<img width="1452" height="808" alt="image" src="https://github.com/user-attachments/assets/d1b8e049-0e7c-47d4-8839-530e75d29f9b" />
+## 配置说明
 
+主要配置项：
 
+| 配置项 | 说明 | 默认值 |
+|--------|------|--------|
+| server.port | 服务器端口 | 8080 |
+| spring.datasource.url | 数据库连接 | jdbc:mysql://localhost:3306/litecloud |
+| litecloud.file.base-path | 文件存储路径 | D:/litecloud/files |
+| spring.servlet.multipart.max-file-size | 最大文件大小 | 50MB |
 
+## 安全说明
 
+- 所有API都经过认证和授权
+- 文件存储使用用户ID隔离
+- 密码经过加密存储
+- 防止跨站请求伪造（CSRF）
+- 会话管理和控制
+
+## 贡献指南
+
+欢迎提交 Pull Request 或 Issue。
+
+## 开源协议
+
+本项目采用 [MIT 许可证](LICENSE)。

@@ -165,6 +165,21 @@
         </form>
     </div>
     <script>
+        // 检查是否已登录
+        window.onload = async function() {
+            try {
+                const resp = await fetch('/dashboard', {
+                    method: 'HEAD'
+                });
+                if (resp.ok) {
+                    window.location.href = '/dashboard';
+                    return;
+                }
+            } catch (err) {
+                // 如果请求失败，说明未登录或session已过期，继续显示登录页面
+            }
+        };
+
         document.getElementById('loginForm').onsubmit = async function (e) {
             e.preventDefault();
             const username = document.getElementById('username').value.trim();

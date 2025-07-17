@@ -1,6 +1,16 @@
 # LiteCloud
 
-LiteCloud 是一个轻量级的云存储系统，基于 Spring Boot 开发，提供文件存储、用户管理等功能。
+LiteCloud 是一个轻量级的云存储系统，基于 Spring Boot 开发，提供文件存储、用户管理等功能。采用现代化的深色主题设计，支持响应式布局，提供舒适的用户体验。
+
+## 界面预览
+
+### 登录界面
+深色主题设计，支持移动端适配
+![登录界面](https://github.com/user-attachments/assets/f9594f85-eb07-4b7b-9fb8-1ab2cc4d27d9)
+
+### 文件管理界面
+层级化文件管理，操作便捷
+![文件管理界面](https://github.com/user-attachments/assets/e5b55b0e-6974-49d5-b9c9-92b8eef8d890)
 
 ## 功能特点
 
@@ -142,10 +152,6 @@ LiteCloud
 
 本项目采用 [MIT 许可证](LICENSE)。
 
-截图
-登录界面
-<img width="1104" height="815" alt="image" src="https://github.com/user-attachments/assets/f9594f85-eb07-4b7b-9fb8-1ab2cc4d27d9" />
-文件管理界面
-<img width="1686" height="856" alt="image" src="https://github.com/user-attachments/assets/e5b55b0e-6974-49d5-b9c9-92b8eef8d890" />
+
 
 

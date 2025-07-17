@@ -141,3 +141,11 @@ LiteCloud
 ## 开源协议
 
 本项目采用 [MIT 许可证](LICENSE)。
+
+截图
+登录界面
+<img width="1104" height="815" alt="image" src="https://github.com/user-attachments/assets/f9594f85-eb07-4b7b-9fb8-1ab2cc4d27d9" />
+文件管理界面
+<img width="1686" height="856" alt="image" src="https://github.com/user-attachments/assets/e5b55b0e-6974-49d5-b9c9-92b8eef8d890" />
+
+

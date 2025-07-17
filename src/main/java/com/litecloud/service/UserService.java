@@ -16,4 +16,6 @@ public interface UserService {
     Map<String, Object> addUser(Users user);
 
     Map<String, Object> listUsers(int page, int size);
+
+    Map<String, Object> deleteUser(Long userId);
 }

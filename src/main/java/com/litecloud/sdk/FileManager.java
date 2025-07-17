@@ -42,4 +42,30 @@ public class FileManager {
         }
         return true;
     }
+
+    /**
+     * 删除用户目录及其内容
+     *
+     * @param dir 用户目录路径
+     */
+
+    public static boolean deleteDir(String dir) {
+        File fileDir = new File(dir);
+        if (fileDir.exists() && fileDir.isDirectory()) {
+            File[] files = fileDir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        deleteDir(file.getAbsolutePath());
+                    } else {
+                        if (!file.delete()) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            fileDir.delete();
+        }
+        return true;
+    }
 }

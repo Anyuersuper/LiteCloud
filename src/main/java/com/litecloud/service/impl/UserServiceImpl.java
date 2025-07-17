@@ -110,4 +110,28 @@ public class UserServiceImpl implements UserService {
         }
         return res;
     }
+
+    @Override
+    public Map<String, Object> deleteUser(Long userId) {
+        Map<String, Object> res = new HashMap<>();
+        int result = userMapper.deleteByPrimaryKey(userId);
+        if (result > 0) {
+            // 删除用户的文件目录
+            String userDirPath = basePath + "/u" + userId;
+            File userDir = new File(userDirPath);
+            if (userDir.exists() && userDir.isDirectory()) {
+                if (!FileManager.deleteDir(userDirPath)) {
+                    res.put("status", "fail");
+                    res.put("message", "Failed to delete user directory");
+                    return res;
+                }
+            }
+            res.put("status", "success");
+            res.put("message", "User deleted successfully");
+        } else {
+            res.put("status", "fail");
+            res.put("message", "Failed to delete user");
+        }
+        return res;
+    }
 }

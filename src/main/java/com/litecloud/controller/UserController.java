@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,4 +62,10 @@ public class UserController {
             @RequestParam int size) {
         return userService.listUsers(page, size);
     }
+
+    @DeleteMapping("/admin/delete")
+    public Map<String, Object> deleteUser(@RequestParam Long userId) {
+        return userService.deleteUser(userId);
+    }
+
 }

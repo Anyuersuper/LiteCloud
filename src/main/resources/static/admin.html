@@ -578,7 +578,10 @@
                     result.data.forEach(u => {
                         const roleText = u.role === 'admin' ? '管理员' : (u.role === 'user' ? '普通用户' : u.role);
                         const tr = document.createElement('tr');
-                        tr.innerHTML = `<td>${u.id}</td><td>${u.username}</td><td>${roleText}</td><td style="height:48px"><button class='edit-btn' data-id='${u.id}' data-username='${u.username}' data-role='${u.role}'>编辑</button></td>`;
+                        tr.innerHTML = `<td>${u.id}</td><td>${u.username}</td><td>${roleText}</td><td style="height:48px">
+                            <button class='edit-btn' data-id='${u.id}' data-username='${u.username}' data-role='${u.role}'>编辑</button>
+                            <button class='btn btn-danger' style="padding:3px 8px;font-size:0.95em;margin:0 2px;" onclick="deleteUser(${u.id})">删除</button>
+                        </td>`;
                         tbody.appendChild(tr);
                     });
                     // 如果数据少于4行，添加空行保持高度
@@ -615,6 +618,29 @@
         });
         closeModal.onclick = function() { modal.style.display = 'none'; };
         window.onclick = function(e) { if (e.target === modal) modal.style.display = 'none'; };
+        // 删除用户
+        async function deleteUser(userId) {
+            if (!confirm('确定要删除该用户吗？此操作不可恢复。')) {
+                return;
+            }
+            try {
+                const res = await fetch(`/admin/delete?userId=${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                const result = await res.json();
+                document.getElementById('msg').textContent = result.msg || (result.status === 'success' ? '删除成功' : '删除失败');
+                if (result.status === 'success') {
+                    loadUsers();
+                }
+            } catch (error) {
+                document.getElementById('msg').textContent = '操作失败，请重试';
+            }
+        }
+
         // 编辑用户提交
         const editUserForm = document.getElementById('editUserForm');
         editUserForm.onsubmit = async function(e) {

@@ -7,78 +7,155 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            background: #f5f6fa;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #181c24;
+            font-family: 'JetBrains Mono', 'Consolas', 'Menlo', 'monospace', Arial, sans-serif;
+            margin: 0;
+            font-size: 14px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: none;
+            color: #fff;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            padding: 32px 0;
+            user-select: none;
+            z-index: 10;
         }
 
         .login-container {
-            width: 350px;
-            margin: 100px auto;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-            padding: 32px 28px;
-        }
-
-        .login-title {
-            text-align: center;
-            font-size: 2em;
-            margin-bottom: 24px;
-            color: #2d8cf0;
+            width: 90%;
+            max-width: 360px;
+            min-width: 280px;
+            margin: 0 auto;
+            background: #232733;
+            border-radius: 18px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+            padding: 32px 28px 28px 28px;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 1;
         }
 
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
-            margin-bottom: 6px;
-            color: #555;
+            margin-bottom: 8px;
+            color: #bfc9d1;
+            font-weight: 500;
+            font-size: 0.95em;
         }
 
         input[type="text"],
         input[type="password"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #dcdfe6;
-            border-radius: 4px;
-            font-size: 1em;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95em;
+            background: #232733;
+            color: #fff;
+            outline: 1.5px solid #353b4a;
+            transition: outline 0.2s;
             box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: 2px solid #6ea8fe;
         }
 
         .login-btn {
             width: 100%;
             padding: 10px;
-            background: #2d8cf0;
-            color: #fff;
+            background: #232733;
+            color: #6ea8fe;
             border: none;
-            border-radius: 4px;
-            font-size: 1.1em;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            outline: 1.5px solid #353b4a;
+            transition: background 0.18s, color 0.18s, box-shadow 0.18s, outline 0.18s, transform 0.18s;
+            margin-top: 8px;
+            font-family: inherit;
         }
 
         .login-btn:hover {
-            background: #1a73e8;
+            background: #6ea8fe;
+            color: #fff;
+            outline: 2px solid #6ea8fe;
+            box-shadow: 0 2px 8px #6ea8fe22;
+            transform: translateY(-1px) scale(1.02);
         }
 
         .error-msg {
-            color: #e74c3c;
+            color: #ff6b6b;
             text-align: center;
-            margin-bottom: 10px;
+            margin: -8px 0 16px 0;
+            font-size: 0.95em;
+            min-height: 19px;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                font-size: 18px;
+                padding: 20px 0;
+            }
+            .login-container {
+                padding: 24px 20px 20px 20px;
+                border-radius: 16px;
+                width: 85%;
+                min-width: 260px;
+            }
+            input[type="text"],
+            input[type="password"] {
+                padding: 8px 10px;
+            }
+            .login-btn {
+                padding: 9px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .header {
+                position: static;
+                padding: 20px 0;
+                margin-bottom: 10px;
+            }
+            .login-container {
+                margin: 0 auto 20px auto;
+            }
+            body {
+                padding: 10px 0;
+            }
         }
     </style>
 </head>
 
 <body>
+    <div class="header">LiteCloud</div>
     <div class="login-container">
-        <div class="login-title">LiteCloud 登录</div>
-        <div id="error" class="error-msg" style="display:none;"></div>
+        <div id="error" class="error-msg"></div>
         <form id="loginForm">
             <div class="form-group">
                 <label for="username">用户名</label>
-                <input type="text" id="username" name="username" required autocomplete="username">
+                <input type="text" id="username" name="username" required autocomplete="username" spellcheck="false">
             </div>
             <div class="form-group">
                 <label for="password">密码</label>

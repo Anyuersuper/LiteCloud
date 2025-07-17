@@ -1,4 +1,4 @@
-
+<img width="1457" height="833" alt="image" src="https://github.com/user-attachments/assets/ff9185aa-91f0-4379-b772-c68f21cace0f" />
 
 # ☁️ LiteCloud
 
@@ -72,6 +72,8 @@ mvn spring-boot:run
 ## 📝 License
 MIT
 
+<img width="1452" height="808" alt="image" src="https://github.com/user-attachments/assets/d1b8e049-0e7c-47d4-8839-530e75d29f9b" />
 
-![Uploading image.png…]()
+
+
 

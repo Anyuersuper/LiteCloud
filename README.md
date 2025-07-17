@@ -1,5 +1,3 @@
-<img width="1457" height="833" alt="image" src="https://github.com/user-attachments/assets/ff9185aa-91f0-4379-b772-c68f21cace0f" />
-
 # ☁️ LiteCloud
 
 LiteCloud 是一个基于 Spring Boot 的简易网盘系统，支持多用户登录、文件上传下载、目录管理等基础云盘功能，适合个人或小型团队自建私有云盘。

@@ -11,33 +11,179 @@
             margin: 0;
             font-size: 14px;
         }
-        .main-card {
-            width: 95vw;
+        @media (max-width: 600px) {
+            .header {
+                font-size: 18px;
+                margin-top: 18px;
+                margin-bottom: 10px;
+            }
+            .container {
+                width: 100vw;
+                max-width: 100vw;
+                min-width: 0;
+                margin-top: 12px;
+                padding: 8px 12px 8px 12px;
+                border-radius: 10px;
+            }
+            .toolbar {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            .toolbar .btn-group {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                gap: 6px;
+                margin-bottom: 0;
+            }
+            .toolbar .right-group {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                gap: 6px;
+                justify-content: flex-end;
+                margin-top: 8px;
+                margin-bottom: 0;
+            }
+            .btn {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+            .user-table-wrapper {
+                margin: 12px 0;
+                padding: 0;
+                height: calc(100vh - 280px);
+            }
+            .user-table th, 
+            .user-table td {
+                font-size: 13px;
+                padding: 0 4px !important;
+                height: 42px;
+            }
+            .user-table th:first-child,
+            .user-table td:first-child {
+                padding-left: 12px !important;
+                width: 20%;
+            }
+            .user-table th:nth-child(2),
+            .user-table td:nth-child(2) {
+                padding-left: 8px !important;
+                width: 35%;
+            }
+            .user-table th:nth-child(3),
+            .user-table td:nth-child(3) {
+                width: 25%;
+            }
+            .user-table th:nth-child(4),
+            .user-table td:nth-child(4) {
+                width: 20%;
+                text-align: right;
+                padding-right: 12px !important;
+            }
+            .edit-btn {
+                padding: 3px 8px;
+                font-size: 12px;
+            }
+            .pagination {
+                margin-top: 12px;
+                padding: 8px 0;
+            }
+            .pagination .btn {
+                min-width: 60px;
+                margin: 0 4px;
+            }
+            .pagination #pageInfo {
+                padding: 2px 8px;
+                margin: 0 6px;
+            }
+            .modal-content {
+                width: 90vw;
+                max-width: 320px;
+                padding: 24px 16px 16px 16px;
+            }
+            .modal-content form {
+                width: 100%;
+            }
+            .form-group {
+                margin-bottom: 14px;
+            }
+            .modal-content label {
+                margin-bottom: 4px;
+            }
+            .modal-content input[type="text"],
+            .modal-content input[type="password"],
+            .modal-content select {
+                padding: 6px 8px;
+            }
+        }
+        .container {
+            width: 100vw;
             max-width: 1200px;
             min-width: 340px;
             margin: 32px auto 0 auto;
             background: #232733;
             border-radius: 18px;
             box-shadow: 0 4px 32px rgba(0,0,0,0.18);
-            padding: 40px 40px 32px 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 24px 32px 18px 32px;
+            box-sizing: border-box;
             transition: all 0.3s ease;
         }
-        .header-title {
+        .header {
+            width: 100vw;
+            background: none;
+            color: #fff;
+            text-align: center;
             font-size: 22px;
             font-weight: bold;
             letter-spacing: 2px;
-            color: #fff;
-            margin-bottom: 32px;
-            text-align: center;
+            margin-top: 32px;
+            margin-bottom: 18px;
             user-select: none;
+        }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .toolbar .btn-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .toolbar .right-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        @media (max-width: 600px) {
+            .toolbar {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            .toolbar .btn-group {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                gap: 6px;
+                justify-content: flex-start;
+                margin-bottom: 0;
+            }
+            .toolbar .right-group {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                gap: 6px;
+                justify-content: flex-end;
+                margin-top: 8px;
+                margin-bottom: 0;
+            }
         }
         .btn-group {
             display: flex;
-            gap: 22px;
-            margin-bottom: 18px;
+            gap: 8px;
             align-items: center;
         }
         .btn {
@@ -108,11 +254,24 @@
             overflow: hidden;
             margin-bottom: 18px;
         }
+        .user-table-wrapper {
+            width: 100%;
+            background: #232733;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            height: 300px;
+            padding: 6px 0;
+            overflow-y: auto;
+        }
+        .user-table tbody {
+            background: transparent;
+        }
         .user-table th {
             background: #232733;
             color: #bfc9d1;
             font-weight: 500;
-            padding: 12px 8px;
+            padding: 0 8px;
+            height: 48px;
             border: none;
             font-size: 15px;
             text-align: left;
@@ -137,9 +296,13 @@
             background: #232733;
             border: none;
             box-shadow: 0 1px 4px rgba(0,0,0,0.10);
-            padding: 12px 8px;
+            padding: 0 8px;
+            height: 48px;
             font-size: 15px;
             color: #e6eaf3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .user-table tr:hover td {
             background: #232e3c;
@@ -279,23 +442,25 @@
     </style>
 </head>
 <body>
-    <div class="header-title" style="margin: 38px 0 32px 0; text-align: center;">用户管理后台</div>
-    <div class="main-card">
-        <div style="display: flex; width: 100%; align-items: center; margin-bottom: 18px; position: relative;">
-            <div class="btn-group" style="margin-bottom: 0; position: absolute; right: 0;">
+    <div class="header">用户管理后台</div>
+    <div class="container">
+        <div class="toolbar">
+            <div class="btn-group">
                 <button class="btn btn-secondary" id="showAddUserBtn">添加用户</button>
+            </div>
+            <div class="right-group">
                 <button class="btn btn-danger" id="backBtn">返回</button>
             </div>
         </div>
         <div class="msg" id="msg"></div>
-        <div style="width:100%;overflow-x:auto;">
+        <div class="user-table-wrapper" style="margin-top: 6px;">
             <table id="userTable" class="user-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>用户名</th>
-                        <th>角色</th>
-                        <th>操作</th>
+                        <th style="width: 15%">ID</th>
+                        <th style="width: 35%">用户名</th>
+                        <th style="width: 25%">角色</th>
+                        <th style="width: 25%">操作</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -407,12 +572,25 @@
             const tbody = document.querySelector('#userTable tbody');
             tbody.innerHTML = '';
             if (result.data && Array.isArray(result.data)) {
-                result.data.forEach(u => {
-                    const roleText = u.role === 'admin' ? '管理员' : (u.role === 'user' ? '普通用户' : u.role);
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${u.id}</td><td>${u.username}</td><td>${roleText}</td><td><button class='edit-btn' data-id='${u.id}' data-username='${u.username}' data-role='${u.role}'>编辑</button></td>`;
-                    tbody.appendChild(tr);
-                });
+                if (result.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#aaa;height:48px;">暂无用户</td></tr>';
+                } else {
+                    result.data.forEach(u => {
+                        const roleText = u.role === 'admin' ? '管理员' : (u.role === 'user' ? '普通用户' : u.role);
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${u.id}</td><td>${u.username}</td><td>${roleText}</td><td style="height:48px"><button class='edit-btn' data-id='${u.id}' data-username='${u.username}' data-role='${u.role}'>编辑</button></td>`;
+                        tbody.appendChild(tr);
+                    });
+                    // 如果数据少于4行，添加空行保持高度
+                    const rowCount = result.data.length;
+                    if (rowCount < 4) {
+                        for (let i = 0; i < 4 - rowCount; i++) {
+                            tbody.innerHTML += '<tr><td colspan="4" style="height:48px;background:transparent;box-shadow:none;"></td></tr>';
+                        }
+                    }
+                }
+            } else {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#aaa;height:48px;">暂无用户</td></tr>';
             }
             document.getElementById('pageInfo').textContent = `第 ${page} 页`;
         }

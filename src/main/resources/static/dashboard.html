@@ -443,12 +443,25 @@
         }
 
         function logout() {
-            fetch('/logout', { method: 'POST' })
-                .then(() => {
-                    document.cookie = 'userId=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
-                    document.cookie = 'rootFileId=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
-                    window.location.href = '/login.html';
-                });
+            fetch('/logout', { 
+                method: 'POST',
+                credentials: 'include'  // 确保发送cookies
+            })
+            .then(() => {
+                // 清除所有相关cookie
+                document.cookie = 'userId=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+                document.cookie = 'rootFileId=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+                // 使用replace防止浏览器回退，使用完整路径确保正确跳转
+                setTimeout(() => {
+                    window.location.replace(window.location.origin + '/login.html');
+                }, 100);
+            })
+            .catch(() => {
+                // 即使请求失败也要清除cookie并跳转
+                document.cookie = 'userId=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+                document.cookie = 'rootFileId=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+                window.location.replace(window.location.origin + '/login.html');
+            });
         }
 
         function getCookie(name) {

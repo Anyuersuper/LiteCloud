@@ -167,16 +167,27 @@
     <script>
         // 检查是否已登录
         window.onload = async function() {
-            try {
-                const resp = await fetch('/dashboard', {
-                    method: 'HEAD'
-                });
-                if (resp.ok) {
-                    window.location.href = '/dashboard';
-                    return;
+            // 优先检查cookie中是否有userId，这通常意味着用户已登录
+            const userId = document.cookie.split('; ').find(row => row.startsWith('userId='));
+            if (userId) {
+                try {
+                    const resp = await fetch('/files/list?parentId=0', {
+                        credentials: 'include',
+                        headers: {
+                            'Cache-Control': 'no-cache',  // 防止缓存
+                            'Pragma': 'no-cache'
+                        }
+                    });
+                    if (resp.ok) {  // 只要请求成功就认为是已登录状态
+                        window.location.replace('/dashboard');  // 使用相对路径，适应不同的部署环境
+                        return;
+                    }
+                } catch (err) {
+                    // 如果请求失败，可能是网络问题，继续显示登录页面
                 }
-            } catch (err) {
-                // 如果请求失败，说明未登录或session已过期，继续显示登录页面
+                // 如果API调用失败，清除可能过期的cookie
+                document.cookie = 'userId=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+                document.cookie = 'rootFileId=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
             }
         };
 
@@ -200,7 +211,10 @@
                     if (data.rootFileId) {
                         document.cookie = `rootFileId=${data.rootFileId}; path=/;`;
                     }
-                    window.location.href = '/dashboard';
+                    // 使用相对路径跳转，适应不同的部署环境
+                    setTimeout(() => {
+                        window.location.replace('/dashboard');
+                    }, 100);
                 } else {
                     errorDiv.textContent = data.message || '用户名或密码错误';
                     errorDiv.style.display = 'block';

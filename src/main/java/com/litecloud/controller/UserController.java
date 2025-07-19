@@ -25,6 +25,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/check-login")
+    public Map<String, Object> checkLogin(HttpServletRequest request) {
+        Object userId = request.getSession().getAttribute("userId");
+        if (userId != null) {
+            return Map.of("status", "success", "userId", userId);
+        }
+        return Map.of("status", "error", "message", "未登录");
+    }
+
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody Users user, HttpServletRequest request) {
         Map<String, Object> res = userService.login(user.getUsername(), user.getPassword());
